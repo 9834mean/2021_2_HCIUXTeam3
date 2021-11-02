@@ -16,11 +16,10 @@ xhr.onreadystatechange = function (e) {
 
 xhr.send();
 
-
 function TryData(data){
     for(var i = 0; i<data.length; i++)
     {
-        IDList.push(data[0]["ID"]);
+        IDList.push(data[i]["ID"]);
     }
     UserData = data;
     console.log(IDList.length)
@@ -28,8 +27,8 @@ function TryData(data){
 
 function LoginClick(){
 
-    var id = document.getElementById("txt_id").value;
-    var ps = document.getElementById("txt_ps").value;
+    var id = document.getElementById("txt_id").value;    //합칠때 수정 필요
+    var ps = document.getElementById("txt_ps").value;    //합칠때 수정 필요
 
     if(id=="")
     {
@@ -47,7 +46,7 @@ function LoginClick(){
             var shapw = CryptoJS.SHA256(ps).toString(); 
             if(shapw==UserData[n]["PW"])
             {
-                
+                //뉴스룸 페이지로
             }
             else
             {
