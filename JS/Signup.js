@@ -1,11 +1,35 @@
-IDList = [];
+IDList_S = [];
 
-var id="";
-var ps="";
-var ps2="";
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/Users.json');
+xhr.setRequestHeader('Content-type', 'application/json');
+
+xhr.onreadystatechange = function (e) {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+            TryData(JSON.parse(xhr.responseText));
+        } else {
+            console.log('Error!');
+        }
+    }
+};
+
+xhr.send();
+
+function TryData(data){
+    for(var i = 0; i<data.length; i++)
+    {
+        IDList_S.push(data[i]["ID"]);
+    }
+    console.log(IDList_S.length)
+}
 
 function SignUpClick()
 {
+    var id="";
+    var ps="";
+    var ps2="";
+
     id = document.getElementById("txt_id").value;    //합칠때 수정 필요
     ps = document.getElementById("txt_ps").value;    //합칠때 수정 필요
     ps2 = document.getElementById("txt_ps2").value;  //합칠때 수정 필요
@@ -28,7 +52,7 @@ function SignUpClick()
     }
     else
     {
-        if(IDList.indexOf(id)!=-1)
+        if(IDList_S.indexOf(id)!=-1)
         {
             alert("이미 존재하는 아이디 입니다.");
         }
