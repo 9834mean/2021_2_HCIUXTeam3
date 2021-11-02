@@ -8,26 +8,25 @@
       <body width="100%" height="100%" style="background-color: #34495e;">
         <form action="SelectInterest.html" method="post" class="loginForm">
           <h2>Select</h2>
-          <h3>선호하시는 분야를 선택해 주세요.</h1>
-          <!-- <div class="idForm">
-            <input id="txt_id" type="text" class="id" placeholder="ID">
-          </div>
-          <div class="passForm">
-            <input id="txt_ps" type="password" class="pw" placeholder="PW">
-          </div> -->
-
-          <button type="button" class="btn" onclick="LoginClick()">
+          <h3>선호하시는 분야를 선택해 주세요.</h3>
+          <br>
+          <label><input type="checkbox" class="Check" name="Politics" value="Politics" Unchecked>정치</label>
+          <label><input type="checkbox" class="Check" name="Economy" value="Economy" Unchecked>경제</label>
+          <label><input type="checkbox" class="Check" name="Society" value="Society" Unchecked>사회</label>
+          <label><input type="checkbox" class="Check" name="Culture" value="Culture" Unchecked>생활/문화</label>
+          <label><input type="checkbox" class="Check" name="World" value="World" Unchecked>세계</label>
+          <label><input type="checkbox" class="Check" name="IT" value="IT" Unchecked>IT/과학</label>
+          <label><input type="checkbox" class="Check" name="Opinion" value="Opinion" Unchecked>오피니언</label>
+          <button type="button" class="btn" onclick="CompeleteClick()">
             선택완료
           </button>
-          <!-- <div class="bottomText">
-            아이디가 없으신가요? <a href="Signup.html"><br>회원가입</a>  
-          </div> -->
         </form>
         <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
         <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="core.min.js"></script>
         <script type="text/javascript" src="sha256.min.js"></script>
-        <script src="Main.js"></script>
+        <script src="SelectInterest.js"></script>
+        <script src="Signup.js" type="module"></script>
         <!-- 합치면 이부분 바꿔야함 -->
       </body>
     </html>
