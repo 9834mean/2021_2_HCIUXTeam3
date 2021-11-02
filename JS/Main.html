@@ -1,6 +1,29 @@
-<head>
-    <body>
+<DOCTYPE HTML5>
+  <html>
+    <head>
+      <link rel="stylesheet" type="text/css" href="Main.css">
+    </head>  
+    <body width="100%" height="100%" style="background-color: #34495e;">
+      <form action="Main.html" method="post" class="loginForm">
+        <h2>오늘의 뉴스</h2>
+        <div class="idForm">
+          <input type="text" class="id" placeholder="ID">
+        </div>
+        <div class="passForm">
+          <input type="password" class="pw" placeholder="PW">
+        </div>
+        <button type="button" class="btn" onclick="button()">
+          로그인
+        </button>
+        <script>
+
+        </script>
+        <div class="bottomText">
+          아이디가 없으신가요? <a href="#"><br>회원가입</a>
+        </div>
+      </form>
       <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="Main.js"></script>
     </body>
-</head>
+  </html>
