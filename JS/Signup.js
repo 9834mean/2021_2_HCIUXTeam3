@@ -59,7 +59,7 @@ function SignUpClick()
         else
         {
             //선호 찾는 페이지로
-            location.href="SelectInterest.html?" + id + "/" + ps;
+            location.href="SelectInterest.html?" + id + "/" + ps + "/" + IDList_S.length;
         }
     }
 

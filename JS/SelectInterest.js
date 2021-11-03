@@ -1,13 +1,21 @@
 temp = location.href.split("?");
-id=temp[1].split("/");
+param=temp[1].split("/");
 
 CheckData = [];
 
 function CompeleteClick()
 {
-    if(CheckData.length>1)
+    if(CheckData.length>0)
     {
+        var data = {
+            ID: param[0],
+            PW: param[1],
+            Interest: "",
+            ShowType:"A"
+        };
         
+        
+
     }
     else
     {
