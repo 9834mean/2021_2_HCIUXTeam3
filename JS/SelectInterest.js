@@ -36,7 +36,7 @@ function CompeleteClick()
             success: function(result){
                 //작업이 성공적으로 발생했을 경우
                 alert("회원가입 성공")
-                location.href="Main.html";
+                location.href="Index.html";
             },
             error:function(){  
                 //에러가 났을 경우 실행시킬 코드
