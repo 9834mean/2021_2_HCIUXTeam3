@@ -1,5 +1,5 @@
 temp = location.href.split("?");
-param=temp[1].split("/");
+param=temp[1];
 
 CheckData = [];
 
@@ -22,15 +22,14 @@ function CompeleteClick()
         }
 
         var senddata = {
-            ID: param[0],
-            PW:  CryptoJS.SHA256(param[1]).toString(),
+            ID: param,
             Interest: chdata,
             ShowType:"A"
         };
 
         $.ajax({
-            type: "put",
-            url : "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param[2] +".json",
+            type: "patch",
+            url : "https://hciuxteam3-default-rtdb.firebaseio.com/Users.json",
             data: JSON.stringify(senddata),
             dataType:'json', 
             success: function(result){
