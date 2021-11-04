@@ -1,6 +1,7 @@
 <DOCTYPE HTML5>
   <html>
-    <title>회원가입</title>
+  <title>회원가입</title>
+
   <head>
     <link rel="stylesheet" type="text/css" href="Signup.css">
   </head>
@@ -8,21 +9,24 @@
   <body width="100%" height="100%" style="background-color: #34495e;">
     <form action="Signup.html" method="post" class="loginForm">
       <h2>Sign Up</h2>
+      <h5>영문 및 숫자만 입력 가능합니다.</h5>
       <div class="idForm">
         <input id="txt_id" type="text" class="id" placeholder="아이디">
       </div>
-      <!-- <div class="passForm">
-        <input id="txt_ps" type="password" class="pw" placeholder="비밀번호">
-      </div>
-      <div class="passForm2">
-        <input id="txt_ps2" type="password" class="pw" placeholder="비밀번호 확인">
-      </div> -->
       <button type="button" class="btn" onclick="SignUpClick()">
         회원가입
       </button>
       <div class="bottomText">
         아이디가 이미 있으신가요? <a href="Main.html"><br>로그인</a>
       </div>
+      <script>
+        $(".not-kor").keyup(function (e) {
+          if (!(e.keyCode >= 37 && e.keyCode <= 40)) {
+            var v = $(this).val();
+            $(this).val(v.replace(/[^a-z0-9]/gi, ''));
+          }
+        });
+      </script>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>

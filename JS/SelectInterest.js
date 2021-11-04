@@ -22,9 +22,10 @@ function CompeleteClick()
         }
 
         var senddata = {
-            ID: param,
-            Interest: chdata,
-            ShowType:"A"
+        [param] : {
+                Interest : chdata,
+                ShowType : 'A'
+            }
         };
 
         $.ajax({
