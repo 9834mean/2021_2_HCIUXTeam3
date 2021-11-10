@@ -21,10 +21,14 @@ function CompeleteClick()
             }
         }
 
+        anotherparam = param.split(";");
+
         var senddata = {
-        [param] : {
+        [anotherparam[0]] : {
                 Interest : chdata,
-                ShowType : 'A'
+                ShowType : 'A',
+                Age      : anotherparam[1],
+                Gender   : anotherparam[2]
             }
         };
 

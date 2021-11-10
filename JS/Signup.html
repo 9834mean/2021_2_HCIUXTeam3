@@ -15,20 +15,16 @@
       <div class="idForm">
         <input id="txt_id" type="text" class="id" placeholder="아이디">
       </div>
+      <div class="idForm">
+        <input id="txt_age" type="text" class="id" placeholder="나이">
+      </div>
+      <label><input id="chkMan"   type="checkbox" class="Check" name="Man"   value="M" onclick="OnCheckClick(this)">남성</label>
+      <label><input id="chkWoman" type="checkbox" class="Check" name="Woman" value="W" onclick="OnCheckClick(this)">여성</label>
       <button type="button" class="btn" onclick="SignUpClick()">
         회원가입
       </button>
-      <div class="bottomText">
-        아이디가 이미 있으신가요? <a href="Index.html"><br>로그인</a>
+      <div class="bottomText">아이디가 이미 있으신가요? <a href="Index.html"><br>로그인</a>
       </div>
-      <script>
-        $(".not-kor").keyup(function (e) {
-          if (!(e.keyCode >= 37 && e.keyCode <= 40)) {
-            var v = $(this).val();
-            $(this).val(v.replace(/[^a-z0-9]/gi, ''));
-          }
-        });
-      </script>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
