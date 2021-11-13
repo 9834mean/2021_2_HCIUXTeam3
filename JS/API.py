@@ -1,41 +1,52 @@
-import requests
-import re
-import pandas as pd
+import os
 import json
+from flask import Flask, request
+import requests
 
-client_id = "cByyPKiwDvI4YNRsAA4g"  # 1.에서 취득한 아이디 넣기
-client_secret = "9v0xRpUYvj"  # 1. 에서 취득한 키 넣기
+app = Flask(__name__)
 
-search_word = '경제'  # 검색어
-encode_type = 'json'  # 출력 방식 json 또는 xml
-max_display = 100  # 출력 뉴스 수
-sort = 'date'  # 결과값의 정렬기준 시간순 date, 관련도 순 sim
-start = 1  # 출력 위치
+@app.route('/NewsAPI', methods = ['POST'])
+def Call_News(): 
+    Json_Param = request.get_json()
+    
+    client_id = "cByyPKiwDvI4YNRsAA4g"
+    client_secret = "9v0xRpUYvj"  
 
-url = f"https://openapi.naver.com/v1/search/news.{encode_type}?query={search_word}&display={str(int(max_display))}&start={str(int(start))}&sort={sort}"
+    search_word = Json_Param["Type"]
+    encode_type = 'json' 
+    max_display = int(Json_Param["Count"])
+    sort = 'sim'  
+    start = 1
 
-#헤더에 아이디와 키 정보 넣기
-headers = {'X-Naver-Client-Id': client_id,
-           'X-Naver-Client-Secret': client_secret
-           }
+    url = f"https://openapi.naver.com/v1/search/news.{encode_type}?query={search_word}&display={str(int(max_display))}&start={str(int(start))}&sort={sort}"
 
-#HTTP요청 보내기
-r = requests.get(url, headers=headers)
-#요청 결과 보기 200 이면 정상적으로 요청 완료
-print(r)
+    headers = {'X-Naver-Client-Id': client_id,
+            'X-Naver-Client-Secret': client_secret
+            }
+        
+    r = requests.get(url, headers=headers)
 
-print(r.json())
+    json_data = r.json()
 
-#r.json()
+    data = {
+        Json_Param["ID"] : json_data["items"]
+    }
 
-# df = pd.DataFrame(r.json()['items'])
+    jobject = json.dumps(data)
 
-# def clean_html(x):
-#   x = re.sub("\&\w*\;","",x)
-#   x = re.sub("<.*?>","",x)
-#   return x
+    rtnvlue = False
 
-# df['title'] = df['title'].apply(lambda x: clean_html(x))
-# df['description'] = df['description'].apply(lambda x: clean_html(x))
+    if r.status_code==200:
+        r2 = requests.patch('https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json', data =jobject)
+        if r2.status_code==200:
+            rtnvlue = True
+    
+    rtn_data = {
+        "success" : rtnvlue
+    }
 
-# df.to_csv(f'news_search_result_{search_word}.csv')
+    return json.dumps(rtn_data)
+
+if __name__ == "__main__":
+    app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
+
