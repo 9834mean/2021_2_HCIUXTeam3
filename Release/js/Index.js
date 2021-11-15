@@ -1,18 +1,23 @@
 IDList = [];
+CallUsers();
 
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/Users.json');
-xhr.setRequestHeader('Content-type', 'application/json');
-
-xhr.onreadystatechange = function (e) {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-            TryData(JSON.parse(xhr.responseText));
-        } else {
-            console.log('Error!');
+function CallUsers()
+{
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/Users.json');
+    xhr.setRequestHeader('Content-type', 'application/json');
+    
+    xhr.onreadystatechange = function (e) {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                TryData(JSON.parse(xhr.responseText));
+            } else {
+                console.log('Error!');
+            }
         }
-    }
-};
+    };
+}
+
 
 xhr.send();
 
@@ -40,7 +45,7 @@ function LoginClick(){
         n =IDList.indexOf(id) 
         if(n>-1)
         {
-            //뉴스 페이지로
+            
         }
         else
         {
