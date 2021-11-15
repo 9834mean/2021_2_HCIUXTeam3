@@ -16,10 +16,36 @@ function CallUsers()
             }
         }
     };
+
+    xhr.send();
+}
+
+function CallNewsData(id)
+{
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + id + '.json');
+    xhr.setRequestHeader('Content-type', 'application/json');
+    
+    xhr.onreadystatechange = function (e) {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                GetDate(JSON.parse(xhr.responseText));                
+            } else {
+                console.log('Error!');
+            }
+        }
+    };
+
+    xhr.send();
+}
+
+function GetDate(data)
+{
+    alert(data[0]["title"])
 }
 
 
-xhr.send();
+
 
 function TryData(data){
     var ids = Object.keys(data)
@@ -45,7 +71,8 @@ function LoginClick(){
         n =IDList.indexOf(id) 
         if(n>-1)
         {
-            
+            CallNewsData(id);
+
         }
         else
         {
