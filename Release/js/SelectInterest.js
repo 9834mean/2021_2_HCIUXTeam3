@@ -26,9 +26,17 @@ function CompeleteClick()
         var senddata = {
         [anotherparam[0]] : {
                 Interest : chdata,
-                ShowType : 'A',
                 Age      : anotherparam[1],
-                Gender   : anotherparam[2]
+                Gender   : anotherparam[2],
+                ReadCount: 0,
+                UserHistory : {
+                    100 : 0,
+                    101 : 0,
+                    102 : 0,
+                    103 : 0,
+                    104 : 0,
+                    105 : 0
+                }
             }
         };
 

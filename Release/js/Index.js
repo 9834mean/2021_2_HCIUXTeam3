@@ -35,7 +35,6 @@ function CallNewsData(id)
             }
         }
     };
-
     xhr.send();
 }
 
@@ -43,9 +42,6 @@ function GetDate(data)
 {
     alert(data[0]["title"])
 }
-
-
-
 
 function TryData(data){
     var ids = Object.keys(data)
@@ -71,8 +67,8 @@ function LoginClick(){
         n =IDList.indexOf(id) 
         if(n>-1)
         {
-            CallNewsData(id);
-
+            //CallNewsData(id);
+            alert("준비중 입니다.")
         }
         else
         {
