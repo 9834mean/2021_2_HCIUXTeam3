@@ -412,8 +412,8 @@ p {
   margin-bottom: 30px;
 }
 .fh5co-post-entry article h2 {
-  font-family: "Playfair Display", times, serif;
-  font-size: 34px;
+  /* font-family: "Playfair Display", times, serif; */
+  font-size: 20px;
   color: #000;
   margin-bottom: 30px;
 }
@@ -640,7 +640,7 @@ figure figcaption {
 .js .to-animate, .js
 .to-animate-2, .js
 .animate-box {
-  opacity: 0;
+  opacity: 100;
 }
 
 .fh5co-nav-toggle {

@@ -39,7 +39,7 @@ def Call_News():
     response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + Json_Param["ID"] + ".json")
     json_data = response.json()
 
-    rtnvlue = NormalA.Main_Function(json_data,Json_Param["ID"])
+    rtnvlue = NormalA.Main_Function(json_data,Json_Param)
 
     rtn_data = {
         "success" : rtnvlue

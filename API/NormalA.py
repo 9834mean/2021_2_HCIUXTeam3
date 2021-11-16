@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import random
 import datetime
@@ -10,13 +9,6 @@ import warnings
 import requests
 import json
 warnings.filterwarnings(action="ignore", category=UserWarning, module="gensim")
-
-def get_preprocessing_data(data) : 
-    data["title_contents"] = data["title"] + " " + data["contents"]
-    data.drop(["date","image_url","title", "contents"], axis = 1, inplace = True)
-    data = data.fillna(" ")
-    #결측치 처리
-    return data 
     
 def make_user_embedding(index_list, data_doc, model):
     user = []
@@ -48,7 +40,10 @@ def get_news_contents(url):
 
     return news_contents
 
+j = 0
+
 def get_news_info(url, s) : 
+    global j
     default_img = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=naver#"
     current_page = 1     
     news_info_list = []
@@ -73,49 +68,60 @@ def get_news_info(url, s) :
             except Exception as e:
                 imsiurl = li.img.attrs.get("src") if li.img else default_img
 
+            imsititle = li.img.attrs.get("alt") if li.img else li.a.text.replace("\n", "").replace("\t","").replace("\r","").replace("\\","")
+            imsidata = li.find(class_="date").text.replace("\t","")
+            imsinewsurl = li.a.attrs.get("href")
+
             news_info = {
-            "title" : li.img.attrs.get("alt") if li.img else li.a.text.replace("\n", "").replace("\t","").replace("\r","") , 
-            "date" : li.find(class_="date").text,
-            "news_url" : li.a.attrs.get("href"),
+            "ID" : "T" + str(s) + "N" + str(j),
+            "title" :  imsititle, 
+            "date" : imsidata,
+            "news_url" : imsinewsurl,
             "image_url" :  imsiurl,
-            "category" : s }
+            "category" : s,
+            "Show" : 0,
+            "Click" : 0}
 
             try :
                 news_contents = get_news_contents(news_info["news_url"])
                 news_info["contents"] = news_contents
                 news_info_list.append(news_info)
+                j = j+1
             except Exception as e : 
                 continue
-        
+            
         current_page += 1 
 
     return news_info_list
 
-def Main_Function(param, ID):
+def Main_Function(param, param2):
+    global j
     sid = []
-
+    imsilist = []
     splitinterest = str(param["Interest"]).split(",")
 
     for i in range(len(splitinterest)):
         sid.append(splitinterest[i])
 
     default_url = "https://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1="
-    df = pd.DataFrame()
 
     for s in tqdm(sid) : 
         news = get_news_info(default_url, s)
-        df = df.append(news)
+        imsilist.append(news)
+        j = 0
 
-    input_data = get_preprocessing_data(df)
-
-    
+  
 
     senddata = {
-        [ID] : param["items"]
+        param2["ID"] : {
+            "Data" : imsilist,
+            "Update" : str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+        }
     }
 
     jobject = json.dumps(senddata)
-
+    jobject = jobject.replace("[[","[")
+    jobject = jobject.replace("]]","]")
     rtnvlue = False
 
 

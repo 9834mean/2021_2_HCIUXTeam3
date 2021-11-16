@@ -68,7 +68,8 @@ function LoginClick(){
         if(n>-1)
         {
             //CallNewsData(id);
-            alert("준비중 입니다.")
+            //alert("준비중 입니다.")
+            location.href="Main/Index.html?" + id;
         }
         else
         {
