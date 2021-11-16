@@ -25,7 +25,6 @@ warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 
 def get_preprocessing_data(data) : 
     data['title_contents'] = data['title'] + " " + data['contents']
-    data.drop([data.columns[0]], axis=1, inplace=True)
     data.drop(['date','image_url','title', 'contents'], axis = 1, inplace = True)
     # 결측치 처리 
     data = data.fillna(" ")
@@ -46,7 +45,8 @@ def make_doc2vec_data(data, column, t_document=False):
 def make_doc2vec_models(tagged_data, tok, vector_size=128, window = 3, epochs = 40, min_count = 0, workers = 4):
     model = Doc2Vec(tagged_data, vector_size=vector_size, window=window, epochs=epochs, min_count=min_count, workers=workers)
     model.save(f'./{tok}_news_model.doc2vec')
-    
+
+'''    
 def make_word2vec_models() :
     model = Word2Vec(tokenized_data,  # 리스트 형태의 데이터
                  sg=1,                # 0: CBOW, 1: Skip-gram
@@ -54,11 +54,12 @@ def make_word2vec_models() :
                  window=3,     # 고려할 앞뒤 폭(앞뒤 3단어)
                  min_count=3,  # 사용할 단어의 최소 빈도(3회 이하 단어 무시)
                  workers=4)    # 동시에 처리할 작업 수(코어 수와 비슷하게 설정)
+'''   
     
 def make_user_embedding(index_list, data_doc, model):
     user = []
     user_embedding = []
-    for i in index_list:
+    for i in index_list: 
         user.append(data_doc[i][0][0])
     for i in user:
         user_embedding.append(model.dv[i])
@@ -116,14 +117,28 @@ def get_news_info(url, s) :
         sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
         soup = get_soup_obj(sec_url)
         lis = soup.find('ul', class_='type06_headline').find_all("li", limit=15)
-        
+
         for li in lis : 
+            try :
+                imsigisa = li.a.attrs.get('href')
+                if imsigisa!="":
+                    soup2 = get_soup_obj(imsigisa)
+                    lis2 = soup2.find('span', class_='end_photo_org').find_all("img", limit=15)
+                    imsiurl = ""
+                    for li2 in lis2 :
+                        imsiurl = li2.attrs.get('src')
+                else:
+                    imsiurl = li.img.attrs.get('src') if li.img else default_img
+            except Exception as e:
+                imsiurl = li.img.attrs.get('src') if li.img else default_img
+
             news_info = {
             "title" : li.img.attrs.get('alt') if li.img else li.a.text.replace("\n", "").replace("\t","").replace("\r","") , 
             "date" : li.find(class_="date").text,
             "news_url" : li.a.attrs.get('href'),
-            "image_url" :  li.img.attrs.get('src') if li.img else default_img,
+            "image_url" :  imsiurl,
             "category" : s }
+
             try :
                 news_contents = get_news_contents(news_info['news_url'])
                 news_info['contents'] = news_contents
@@ -140,7 +155,7 @@ sid = ['100', '101', '102', '103', '104', '105']
 default_url = "https://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1="
 df = pd.DataFrame()
 
-for s in tqdm(sid) : 
+for s in sid : 
     news = get_news_info(default_url, s)
     df = df.append(news)
 
@@ -155,11 +170,23 @@ make_doc2vec_models(data_doc_contents_tag, tok=False)
 
 model_contents = Doc2Vec.load('./False_news_model.doc2vec')
 
+print(input_data['category'].value_counts())
 
-#################################### recommend, view ######################################3 
+#################################### recommend, view #######################################
+id = "9834min"
+response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + id + "/UserHistory.json")
+json_data = response.json()
+print(json_data)
+
+user_category = pd.DataFrame()
+print(user_category.dtypes)
+
+################################### fake user ##############################################
+''' 
 user_category_0 = input_data.loc[random.sample(input_data.loc[input_data.category == 100, :].index.values.tolist(), 10), : ]
 view_user_history(user_category_0)
 
 user_0 = make_user_embedding(user_category_0.index.values.tolist(), data_doc_contents, model_contents)
 result_0 = get_recommened_contents(user_0, data_doc_contents, model_contents)
 print(pd.DataFrame(result_0.loc[:, ]))
+'''
