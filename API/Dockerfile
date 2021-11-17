@@ -11,7 +11,7 @@ WORKDIR $APP_HOME
 COPY . ./
 
 # Install production dependencies.
-RUN pip install Flask gunicorn requests
+RUN pip install Flask gunicorn requests numpy bs4 tqdm ipywidgets lxml
 
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.

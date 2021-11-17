@@ -1,5 +1,4 @@
 import numpy as np
-import datetime
 from datetime import datetime
 from bs4 import BeautifulSoup
 import bs4.element
@@ -7,7 +6,6 @@ from tqdm.notebook import tqdm
 import warnings
 import requests
 import json
-import random
 warnings.filterwarnings(action="ignore", category=UserWarning, module="gensim")
     
 def make_user_embedding(index_list, data_doc, model):
@@ -96,7 +94,7 @@ def get_news_info(url, s,eachcount) :
 
     return news_info_list
 
-def Main_Function(param, param2):
+def Main_Function(param,IDParam):
     global j
     sid = []
     imsilist = []
@@ -129,7 +127,7 @@ def Main_Function(param, param2):
         j = 0
 
     senddata = {
-        param2["ID"] : {
+        IDParam: {
             "Data" : imsilist,
             "Update" : str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
         }
@@ -143,7 +141,7 @@ def Main_Function(param, param2):
         jobject = jobject.replace("], [",",")
 
     rtnvlue = False
-
+    
     r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
     if r2.status_code==200:
         rtnvlue = True

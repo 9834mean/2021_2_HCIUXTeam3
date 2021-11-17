@@ -77,19 +77,14 @@ function LoginClick(){
                     url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + getid + ".json",
                     dataType: 'json',
                     success: function (result) {
-                        if(result==null)
-                        {
-                            UpdateNews(getid)
-                        }
                       //작업이 성공적으로 발생했을 경우
-                      CheckUpdate(JSON.parse(result.responseText), getid)
+                      CheckUpdate(result, getid)
                     },
                     error: function () {
                       //에러가 났을 경우 실행시킬 코드
-                      UpdateNews(getid)
+                      alert("업데이트 실패. 담당자에게 문의 바랍니다.")
                     }
-                  })
-                  location.href="Main/Index.html?" + id;
+                  })                  
             }
             catch{
 
@@ -103,38 +98,16 @@ function LoginClick(){
 
 }
 
-function CheckUpdate(Data, ID)
+function CheckUpdate(Data, id)
 {
-    Server = Date.parse(Data["Update"])
+    ServerTime = new Date(Data["Update"])
     let today = new Date();  
-    if(Server<today)
+    if(today.getFullYear()==ServerTime.getFullYear()&&today.getMonth()==ServerTime.getMonth()&&today.getDay()==ServerTime.getDay())
     {
-        UpdateNews(ID)
+        location.href="Main/Index.html?" + id;
     }
-}
-
-function UpdateNews(ID)
-{
-    var senddata = {
-        "ID":ID
-      };
-    
-    $.ajax({
-        type: "POST",
-        url: "",
-        data: JSON.stringify(senddata),
-        dataType: 'json',
-        success: function (result) {
-          //작업이 성공적으로 발생했을 경우
-            a = JSON.parse(result.responseText)
-            if(a["success"]!=true)
-            {
-                alert("데이터 갱신 실패 문의 바람")
-            }
-        },
-        error: function () {
-          //에러가 났을 경우 실행시킬 코드
-          alert("실패")
-        }
-      })
+    else
+    {
+        alert("날짜 갱신이 필요합니다. 담당자에게 문의 바랍니다.")
+    }
 }
