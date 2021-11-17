@@ -79,7 +79,6 @@ def get_news_info(url, s) :
             "news_url" : imsinewsurl,
             "image_url" :  imsiurl,
             "category" : s,
-            "Show" : 0,
             "Click" : 0}
 
             try :

@@ -1,8 +1,9 @@
 temp = location.href.split("?");
 param = temp[1];
+MainData = "";
 
 var xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + '9834min' + '.json');
+xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + param + '.json');
 xhr.setRequestHeader('Content-type', 'application/json');
 
 xhr.onreadystatechange = function (e) {
@@ -18,20 +19,51 @@ xhr.onreadystatechange = function (e) {
 xhr.send();
 
 function TryData(data) {
+  MainData = data
   setelement(data)
 }
 
 function setelement(NewsData) {
   var html = '';
-  // html += '<div class="clearfix visible-xs-block"></div>';
-  for (i = 0; i < NewsData["Data"].length; i++) {   
-    html += '<article style="height:259.25px;width:459.45px;" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-xxs-12 animate-box">';
-    html += '<figure style="width:100%;height:100%;object-fit:cover;overflow:hidden;">';
-    html += '<a href="' + NewsData["Data"][i]["news_url"] + '"><img src="' + NewsData["Data"][i]["image_url"] + ' style="width:100%;height:100%;" alt="Image" class="img-responsive">';
+  for (i = 0; i < NewsData["Data"].length; i++) {
+    html += '<article id="' + NewsData["Data"][i]["ID"] + '" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-xxs-12 animate-box" onclick=newsclick(this)>';
+    html += '<figure style="width:100%;height:100%;max-height:200px;min-height:200px;object-fit:cover;overflow:hidden;">';
+    html += '<img src="' + NewsData["Data"][i]["image_url"] + ' alt="Image" class="img-responsive">';
     html += '</figure>';
-    html += '<a href="' + NewsData["Data"][i]["news_url"] + '"><h2 class="jm-font">' + NewsData["Data"][i]["title"] + '</a></h2>';
+    html += '<h2 class="jm-font">' + NewsData["Data"][i]["title"] + '</a></h2>';
     html += '</article>';
   }
-  // html += '<div class="clearfix visible-xs-block"></div>';
   $("#parent").append(html);
+}
+
+function newsclick(getdata) {
+  for (i = 0; i < MainData["Data"].length; i++) {
+    if (MainData["Data"][i]["ID"] == getdata.id) {
+
+      var senddata = {
+        Click: 1
+      };
+
+      $.ajax({
+        type: "patch",
+        url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + param + '/Data/' + i + ".json",
+        data: JSON.stringify(senddata),
+        dataType: 'json',
+        success: function (result) {
+          //작업이 성공적으로 발생했을 경우
+          GotoLink(MainData["Data"][i]["news_url"])
+        },
+        error: function () {
+          //에러가 났을 경우 실행시킬 코드
+          alert("실패")
+        }
+      })
+      break;
+
+    }
+  }
+}
+
+function GotoLink(link) {
+  window.open(link);
 }
