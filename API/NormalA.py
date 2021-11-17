@@ -1,5 +1,4 @@
 import numpy as np
-import random
 import datetime
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -8,6 +7,7 @@ from tqdm.notebook import tqdm
 import warnings
 import requests
 import json
+import random
 warnings.filterwarnings(action="ignore", category=UserWarning, module="gensim")
     
 def make_user_embedding(index_list, data_doc, model):
@@ -42,14 +42,14 @@ def get_news_contents(url):
 
 j = 0
 
-def get_news_info(url, s) : 
+def get_news_info(url, s,eachcount) : 
     global j
     default_img = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=naver#"
     current_page = 1     
     news_info_list = []
     today = str(datetime.now().strftime("%Y%m%d"))
 
-    for i in range (10) : 
+    for i in range (eachcount) : 
         sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
         soup = get_soup_obj(sec_url)
         lis = soup.find("ul", class_="type06_headline").find_all("li", limit=15)
@@ -68,7 +68,10 @@ def get_news_info(url, s) :
             except Exception as e:
                 imsiurl = li.img.attrs.get("src") if li.img else default_img
 
-            imsititle = li.img.attrs.get("alt") if li.img else li.a.text.replace("\n", "").replace("\t","").replace("\r","").replace("\\","")
+            if imsiurl=="" or imsiurl==default_img :
+                continue
+
+            imsititle = li.img.attrs.get("alt") if li.img else li.a.text.replace("\n", "").replace("\t","").replace("\r","").replace("\\","").replace("\"","")
             imsidata = li.find(class_="date").text.replace("\t","")
             imsinewsurl = li.a.attrs.get("href")
 
@@ -104,12 +107,26 @@ def Main_Function(param, param2):
 
     default_url = "https://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1="
 
-    for s in tqdm(sid) : 
-        news = get_news_info(default_url, s)
+    categorylen = len(splitinterest)
+    eachcount = 0
+
+    if categorylen==1:
+        eachcount = 10
+    elif categorylen==2:
+        eachcount = 5       
+    elif categorylen==3:
+        eachcount = 4   
+    elif categorylen==4:
+        eachcount = 3  
+    elif categorylen==5:
+        eachcount = 2  
+    elif categorylen==6:
+        eachcount = 2  
+
+    for s in tqdm(sid) :     
+        news = get_news_info(default_url, s,eachcount)
         imsilist.append(news)
         j = 0
-
-  
 
     senddata = {
         param2["ID"] : {
@@ -121,8 +138,11 @@ def Main_Function(param, param2):
     jobject = json.dumps(senddata)
     jobject = jobject.replace("[[","[")
     jobject = jobject.replace("]]","]")
-    rtnvlue = False
 
+    if categorylen>1:
+        jobject = jobject.replace("], [",",")
+
+    rtnvlue = False
 
     r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
     if r2.status_code==200:

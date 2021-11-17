@@ -24,6 +24,7 @@ function TryData(data) {
 }
 
 function setelement(NewsData) {
+  NewsData["Data"] = shuffle(NewsData["Data"])
   var html = '';
   for (i = 0; i < NewsData["Data"].length; i++) {
     html += '<article id="' + NewsData["Data"][i]["ID"] + '" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-xxs-12 animate-box" onclick=newsclick(this)>';
@@ -34,6 +35,17 @@ function setelement(NewsData) {
     html += '</article>';
   }
   $("#parent").append(html);
+}
+
+function shuffle(sourceArray) {
+  for (var i = 0; i < sourceArray.length - 1; i++) {
+      var j = i + Math.floor(Math.random() * (sourceArray.length - i));
+
+      var temp = sourceArray[j];
+      sourceArray[j] = sourceArray[i];
+      sourceArray[i] = temp;
+  }
+  return sourceArray;
 }
 
 function newsclick(getdata) {
