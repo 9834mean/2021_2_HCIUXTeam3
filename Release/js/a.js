@@ -1,6 +1,6 @@
 temp = location.href.split("?");
 param = temp[1];
-MainData = "";
+ShuffleData = "";
 
 var xhr = new XMLHttpRequest();
 xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + param + '.json');
@@ -19,12 +19,12 @@ xhr.onreadystatechange = function (e) {
 xhr.send();
 
 function TryData(data) {
-  MainData = data
   setelement(data)
 }
 
 function setelement(NewsData) {
   NewsData["Data"] = shuffle(NewsData["Data"])
+  ShuffleData = NewsData
   var html = '';
   for (i = 0; i < NewsData["Data"].length; i++) {
     html += '<article id="' + NewsData["Data"][i]["ID"] + '" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-xxs-12 animate-box" onclick=newsclick(this)>';
@@ -49,50 +49,28 @@ function shuffle(sourceArray) {
 }
 
 function newsclick(getdata) {
-  for (i = 0; i < MainData["Data"].length; i++) {
-    if (MainData["Data"][i]["ID"] == getdata.id) {
-
-      $.ajax({
-        type: "get",
-        url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + param + "/Data.json",
-        dataType: 'json',
-        success: function (result) {
-          //작업이 성공적으로 발생했을 경우
-          for (j = 0; j < result.length; j++) {
-            if (result[j]["ID"] == MainData["Data"][j]["ID"]) {
-              if (result["Click"] == "1") {
-                GotoLink(result[i]["news_url"])
-                break;
-              }
-              else {
-                UpdateClick(result, j)
-              }
-            }
-            else {
-              continue;
-            }
-          }
-        },
-        error: function () {
-          //에러가 났을 경우 실행시킬 코드
-          alert("실패")
-        }
-      })
-      break;
+  for (i = 0; i < ShuffleData["Data"].length; i++) {
+    if (ShuffleData["Data"][i]["ID"] == getdata.id) {
+      if (ShuffleData["Data"][i]["Click"] == 1) {
+        GotoLink(ShuffleData["Data"][i]["news_url"])
+        break;
+      }
+      else {
+        UpdateClick(i)
+      }
     }
+
   }
 }
 
-function UpdateClick(data, i) {
-
+function UpdateClick(i) {
   $.ajax({
     type: "get",
     url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + "/UserHistory.json",
     dataType: 'json',
     success: function (result) {
       //작업이 성공적으로 발생했을 경우
-      Clickcategory = result[data[i]["category"]]
-      UpdateHistory(data,i,Clickcategory)
+      UpdateHistory(result, i)
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
@@ -101,43 +79,71 @@ function UpdateClick(data, i) {
   })
 }
 
-function UpdateHistory(data,i,Clickcategory)
-{
-  Clickcategory = Number(Clickcategory)
+function UpdateHistory(getparam, i) {
+  Clickcategory = Number(getparam[ShuffleData["Data"][i]["category"]])
   Clickcategory++
   var senddata = {
-    [data[i]["category"]]: Clickcategory
+    [ShuffleData["Data"][i]["category"]]: Clickcategory
   };
+
+  senddata = JSON.stringify(senddata)
+
   $.ajax({
     type: "patch",
     url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + "/UserHistory.json",
-    data: JSON.stringify(senddata),
+    data: senddata,
     dataType: 'json',
     success: function (result) {
       //작업이 성공적으로 발생했을 경우
-      UpdateNewsClick(param,i)
+      UpdateNewsClick(i)
     },
-    error: function () {
+    error: function (result) {
       //에러가 났을 경우 실행시킬 코드
       alert("실패")
     }
   })
 }
 
-function UpdateNewsClick(i)
-{
+function UpdateNewsClick(i) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + param + '.json');
+  xhr.setRequestHeader('Content-type', 'application/json');
+
+  xhr.onreadystatechange = function (e) {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        OriginData(JSON.parse(xhr.responseText), i);
+      } else {
+        console.log('Error!');
+      }
+    }
+  };
+
+  xhr.send();
+}
+
+function OriginData(data, i) {
   var senddata = {
     Click: 1
   };
 
+  Num = "a"
+
+  for (k = 0; k < data["Data"].length; k++) {
+    if (ShuffleData["Data"][i]["ID"] == data["Data"][k]["ID"]) {
+      Num = k
+      break;
+    }
+  }
+
   $.ajax({
     type: "patch",
-    url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + param + '/Data/' + i + ".json",
+    url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + param + '/Data/' + Num + ".json",
     data: JSON.stringify(senddata),
     dataType: 'json',
     success: function (result) {
       //작업이 성공적으로 발생했을 경우
-      GotoLink(MainData[i]["news_url"])
+      GotoLink(ShuffleData["Data"][i]["news_url"])
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
