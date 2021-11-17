@@ -104,7 +104,7 @@ function CheckUpdate(Data, id)
     let today = new Date();  
     if(today.getFullYear()==ServerTime.getFullYear()&&today.getMonth()==ServerTime.getMonth()&&today.getDay()==ServerTime.getDay())
     {
-        location.href="Main/Index.html?" + id;
+        location.href="Main.html?" + id;
     }
     else
     {
