@@ -1,34 +1,53 @@
 <DOCTYPE HTML5>
   <html>
-    <title>로그인</title>
-    <head>
-      <link rel="stylesheet" type="text/css" href="css/Index.css">
-      <!-- 합치면 이부분 바꿔야함 -->
-    </head>  
-    <body width="100%" height="100%" style="background-color: #34495e;">
-      <meta http-equiv="Expires" content="-1" />
-      <meta name="viewport" content="width=device-width">       
-      <form action="Index.html" method="post" class="loginForm">
-        <h2>Log in</h2>
-        <div class="idForm">
-          <input id="txt_id" type="text" class="id" placeholder="ID">
-        </div>
-        <!-- <div class="passForm">
+  <title>로그인</title>
+
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/Index.css">
+    <!-- 합치면 이부분 바꿔야함 -->
+    <style type="text/css">
+      #loading {
+        height: 100%;
+      }
+
+      #loading-image {
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body width="100%" height="100%" style="background-color: #34495e;">
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/core.min.js"></script>
+    <script type="text/javascript" src="js/sha256.min.js"></script>
+    <script type="text/javascript" src="js/Index.js"></script>
+    <meta http-equiv="Expires" content="-1" />
+    <meta name="viewport" content="width=device-width">
+    <form action="Index.html" method="post" class="loginForm">
+      <h2>Log in</h2>
+      <div class="idForm">
+        <input id="txt_id" type="text" class="id" placeholder="ID">
+      </div>
+      <!-- <div class="passForm">
           <input id="txt_ps" type="password" class="pw" placeholder="PW">
         </div> -->
-        <button type="button" class="btn" onclick="LoginClick()">
-          로그인
-        </button>
-        <div class="bottomText">
-          아이디가 없으신가요? <a href="Signup.html"><br>회원가입</a>  
-          <!-- 합치면 이부분 바꿔야함 -->
-        </div>
-      </form>
-      <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
-      <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-      <script type="text/javascript" src="js/core.min.js"></script>
-      <script type="text/javascript" src="js/sha256.min.js"></script>
-      <script type="text/javascript" src="js/Index.js"></script>
-      <!-- 합치면 이부분 바꿔야함 -->
-    </body>
+      <button type="button" class="btn" onclick="LoginClick()">
+        로그인
+      </button>
+      <div class="bottomText">
+        아이디가 없으신가요? <a href="Signup.html"><br>회원가입</a>
+        <!-- 합치면 이부분 바꿔야함 -->
+      </div>
+      <div id="loading">
+        <img id="loading-image" src="image/loading.gif" alt="Loading..." />
+    </div>
+  </script>
+    </form>
+    <!-- 합치면 이부분 바꿔야함 -->
+  </body>
+
   </html>
