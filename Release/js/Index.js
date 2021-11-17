@@ -60,20 +60,40 @@ function TryData(data){
 
 function LoginClick(){
 
-    var id = document.getElementById("txt_id").value;    //합칠때 수정 필요
+    var getid = document.getElementById("txt_id").value;    //합칠때 수정 필요
 
-    if(id=="")
+    if(getid=="")
     {
         alert("아이디를 입력해 주세요!")
     }
     else
     {
-        n =IDList.indexOf(id) 
+        n =IDList.indexOf(getid) 
         if(n>-1)
         {
-            //CallNewsData(id);
-            //alert("준비중 입니다.")
-            location.href="Main/Index.html?" + id;
+            try{
+                $.ajax({
+                    type: "GET",
+                    url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + getid + ".json",
+                    dataType: 'json',
+                    success: function (result) {
+                        if(result==null)
+                        {
+                            UpdateNews(getid)
+                        }
+                      //작업이 성공적으로 발생했을 경우
+                      CheckUpdate(JSON.parse(result.responseText), getid)
+                    },
+                    error: function () {
+                      //에러가 났을 경우 실행시킬 코드
+                      UpdateNews(getid)
+                    }
+                  })
+                  location.href="Main/Index.html?" + id;
+            }
+            catch{
+
+            }            
         }
         else
         {
@@ -81,4 +101,40 @@ function LoginClick(){
         }
     }
 
+}
+
+function CheckUpdate(Data, ID)
+{
+    Server = Date.parse(Data["Update"])
+    let today = new Date();  
+    if(Server<today)
+    {
+        UpdateNews(ID)
+    }
+}
+
+function UpdateNews(ID)
+{
+    var senddata = {
+        "ID":ID
+      };
+    
+    $.ajax({
+        type: "POST",
+        url: "",
+        data: JSON.stringify(senddata),
+        dataType: 'json',
+        success: function (result) {
+          //작업이 성공적으로 발생했을 경우
+            a = JSON.parse(result.responseText)
+            if(a["success"]!=true)
+            {
+                alert("데이터 갱신 실패 문의 바람")
+            }
+        },
+        error: function () {
+          //에러가 났을 경우 실행시킬 코드
+          alert("실패")
+        }
+      })
 }
