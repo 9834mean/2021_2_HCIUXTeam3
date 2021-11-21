@@ -1,22 +1,25 @@
 temp = location.href.split("?");
 param = temp[1];
 ShuffleData = "";
+callData();
 
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + param + '.json');
-xhr.setRequestHeader('Content-type', 'application/json');
+function callData() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + param + '.json');
+  xhr.setRequestHeader('Content-type', 'application/json');
 
-xhr.onreadystatechange = function (e) {
-  if (xhr.readyState === XMLHttpRequest.DONE) {
-    if (xhr.status === 200) {
-      TryData(JSON.parse(xhr.responseText));
-    } else {
-      console.log('Error!');
+  xhr.onreadystatechange = function (e) {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        TryData(JSON.parse(xhr.responseText));
+      } else {
+        console.log('Error!');
+      }
     }
-  }
-};
+  };
 
-xhr.send();
+  xhr.send();
+}
 
 function TryData(data) {
   setelement(data)
@@ -154,4 +157,5 @@ function OriginData(data, i) {
 
 function GotoLink(link) {
   window.open(link);
+  window.location.reload()
 }

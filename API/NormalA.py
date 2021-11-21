@@ -99,6 +99,11 @@ def get_news_info(url, s,eachcount) :
 
                 news_info_list.append(news_info)
                 j = j+1
+
+                if(len(news_info_list)>99):                
+                    break
+                
+
             except Exception as e : 
                 eachcount = eachcount +1
                 continue
