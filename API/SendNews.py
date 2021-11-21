@@ -6,5 +6,4 @@ json_data = response.json()
 idlist = json_data.keys()
 idlist = list(idlist)
 for i in range(len(idlist)):
-    if idlist[i]=="codo47":
-        NormalA.Main_Function(json_data[idlist[i]],idlist[i])
+    NormalA.Main_Function(json_data[idlist[i]],idlist[i])

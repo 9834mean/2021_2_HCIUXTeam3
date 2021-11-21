@@ -6,6 +6,7 @@ from tqdm.notebook import tqdm
 import warnings
 import requests
 import json
+import time
 warnings.filterwarnings(action="ignore", category=UserWarning, module="gensim")
     
 def make_user_embedding(index_list, data_doc, model):
@@ -46,6 +47,7 @@ def get_news_info(url, s,eachcount) :
     current_page = 1     
     news_info_list = []
     today = str(datetime.now().strftime("%Y%m%d"))
+    flag = 0
 
     for i in range (eachcount) : 
         sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
@@ -85,9 +87,20 @@ def get_news_info(url, s,eachcount) :
             try :
                 news_contents = get_news_contents(news_info["news_url"])
                 news_info["contents"] = news_contents
+
+                for i in range(len(news_info_list)):
+                    if(imsinewsurl==news_info_list[i]["news_url"]):
+                        flag = 1
+                        break
+                
+                if(flag==1):
+                    flag=0
+                    continue
+
                 news_info_list.append(news_info)
                 j = j+1
             except Exception as e : 
+                eachcount = eachcount +1
                 continue
             
         current_page += 1 
@@ -142,8 +155,14 @@ def Main_Function(param,IDParam):
 
     rtnvlue = False
     
-    r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
-    if r2.status_code==200:
-        rtnvlue = True
+    try:
+        r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+        if r2.status_code==200:
+            rtnvlue = True
+    except:
+        time.sleep(2)
+        r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+        if r2.status_code==200:
+            rtnvlue = True
 
     return rtnvlue
