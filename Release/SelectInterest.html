@@ -1,0 +1,33 @@
+<DOCTYPE HTML5>
+    <html>
+      <title>선호분야선택</title>
+      <head>
+        <link rel="stylesheet" type="text/css" href="css/SelectInterest.css">
+        <!-- 합치면 이부분 바꿔야함 -->
+      </head>  
+      <body width="100%" height="100%" style="background-color: #34495e;">
+        <meta http-equiv="Expires" content="-1" />
+        <meta name="viewport" content="width=device-width">        
+        <form action="SelectInterest.html" method="post" class="loginForm">
+          <h2>Select</h2>
+          <h3>선호하시는 분야를 선택해 주세요.</h3>
+          <br>
+          <label><input type="checkbox" class="Check" name="Politics" value="100"  onclick="OnCheckClick(this)">정치</label>
+          <label><input type="checkbox" class="Check" name="Economy"  value="101"  onclick="OnCheckClick(this)">경제</label>
+          <label><input type="checkbox" class="Check" name="Society"  value="102"  onclick="OnCheckClick(this)">사회</label>
+          <label><input type="checkbox" class="Check" name="Culture"  value="103"  onclick="OnCheckClick(this)">생활/문화</label>
+          <label><input type="checkbox" class="Check" name="World"    value="104"  onclick="OnCheckClick(this)">세계</label>
+          <label><input type="checkbox" class="Check" name="IT"       value="105"  onclick="OnCheckClick(this)">IT/과학</label>
+          <!-- <label><input type="checkbox" class="Check" name="Opinion" value="Opinion" Unchecked>오피니언</label> -->
+          <button type="button" class="btn" onclick="CompeleteClick()">
+            선택완료
+          </button>
+        </form>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+        <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/core.min.js"></script>
+        <script type="text/javascript" src="js/sha256.min.js"></script>
+        <script type="text/javascript" src="js/SelectInterest.js"></script>
+        <!-- 합치면 이부분 바꿔야함 -->
+      </body>
+    </html>

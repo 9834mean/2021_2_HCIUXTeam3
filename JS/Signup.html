@@ -1,0 +1,36 @@
+<DOCTYPE HTML5>
+  <html>
+  <title>회원가입</title>
+
+  <head>
+    <link rel="stylesheet" type="text/css" href="Signup.css">
+  </head>
+
+  <body width="100%" height="100%" style="background-color: #34495e;">
+    <meta http-equiv="Expires" content="-1" />
+    <meta name="viewport" content="width=device-width">       
+    <form action="Signup.html" method="post" class="loginForm">
+      <h2>Sign Up</h2>
+      <h5>영문 및 숫자만 입력 가능합니다.</h5>
+      <div class="idForm">
+        <input id="txt_id" type="text" class="id" placeholder="아이디">
+      </div>
+      <div class="idForm">
+        <input id="txt_age" type="text" class="id" placeholder="나이">
+      </div>
+      <label><input id="chkMan"   type="checkbox" class="Check" name="Man"   value="M" onclick="OnCheckClick(this)">남성</label>
+      <label><input id="chkWoman" type="checkbox" class="Check" name="Woman" value="W" onclick="OnCheckClick(this)">여성</label>
+      <button type="button" class="btn" onclick="SignUpClick()">
+        회원가입
+      </button>
+      <div class="bottomText">아이디가 이미 있으신가요? <a href="Index.html"><br>로그인</a>
+      </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="core.min.js"></script>
+    <script type="text/javascript" src="sha256.min.js"></script>
+    <script type="text/javascript" src="Signup.js"></script>
+  </body>
+
+  </html>
