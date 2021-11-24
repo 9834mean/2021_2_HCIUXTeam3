@@ -259,6 +259,7 @@ def TypeB():
         result = pd.concat([result1, result2]) ## finish!
 
         result.drop(['title_contents'], axis = 1, inplace = True)
+        result = result.drop_duplicates(['ID'])
 
         imsilist = result.to_json(orient = 'records',force_ascii=False)
         imsilist = imsilist.replace("\\","")
