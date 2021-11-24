@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import random
 import os
 import time
-
+import re
 import re
 from pandas.io import json
 import requests
@@ -30,7 +30,7 @@ warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 ################################ def #################################
 def get_preprocessing_data(data) : 
     data['title_contents'] = data['title'] + " " + data['contents']
-    data.drop(['date','image_url','title', 'contents'], axis = 1, inplace = True)
+    data.drop(['date','contents'], axis = 1, inplace = True)
     # 결측치 처리 
     data = data.fillna(" ")
     
@@ -106,10 +106,14 @@ def get_news_contents(url):
 
     return news_contents
 
+j = 0
+
 def get_news_info(url, s) : 
+    global j
     default_img = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=naver#"
     current_page = 1     
     news_info_list = []
+    flag = 0
 
     for i in range (10) : 
         sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
@@ -130,17 +134,47 @@ def get_news_info(url, s) :
             except Exception as e:
                 imsiurl = li.img.attrs.get('src') if li.img else default_img
 
+            imsititle = li.img.attrs.get("alt") if li.img else li.a.text.replace("\n", "")
+            imsititle = imsititle.replace("\t","")
+            imsititle = imsititle.replace("\r","")
+            imsititle = imsititle.replace("\\","")
+            imsititle = imsititle.replace('"',"'")
+            imsititle = imsititle.replace("[","-")
+            imsititle = imsititle.replace("]","-")
+            imsititle = imsititle.replace("“","'")
+            imsititle = imsititle.replace("”","'")
+            imsititle = imsititle.replace("`","'")
+            imsititle = imsititle.replace('"','')
+            imsititle = imsititle.replace('\\','')
+            imsititle = re.sub('[=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', '', imsititle)
+            imsidata = li.find(class_="date").text.replace("\t","")
+            imsinewsurl = li.a.attrs.get("href")
+
             news_info = {
-            "title" : li.img.attrs.get('alt') if li.img else li.a.text.replace("\n", "").replace("\t","").replace("\r","") , 
-            "date" : li.find(class_="date").text,
-            "news_url" : li.a.attrs.get('href'),
+            "ID" : "T" + str(s) + "N" + str(j),
+            "title" :  imsititle, 
+            "date" : imsidata,
+            "news_url" : imsinewsurl,
             "image_url" :  imsiurl,
-            "category" : s }
+            "category" : s,
+            "Click" : 0}
 
             try :
-                news_contents = get_news_contents(news_info['news_url'])
-                news_info['contents'] = news_contents
+                news_contents = get_news_contents(news_info["news_url"])
+                news_info["contents"] = news_contents
+
+                for i in range(len(news_info_list)):
+                    if(imsinewsurl==news_info_list[i]["news_url"]):
+                        flag = 1
+                        break
+                
+                if(flag==1):
+                    flag=0
+                    continue
+
                 news_info_list.append(news_info)
+                j = j+1
+               
             except Exception as e : 
                 continue
         
@@ -149,7 +183,7 @@ def get_news_info(url, s) :
     print(s + " 분야 크롤링 완료")    
     return news_info_list
 
-def CallTypea2(param,ID):
+def CallTypea2():
     ################################ Crawling #################################
     global today
     date = str(datetime.now())
@@ -165,6 +199,7 @@ def CallTypea2(param,ID):
     for s in sid : 
         news = get_news_info(default_url, s)
         df = df.append(news)
+        j = 0
 
 
 ################################ Modeling #################################
@@ -176,61 +211,64 @@ def CallTypea2(param,ID):
 
     make_doc2vec_models(data_doc_contents_tag, tok=False)
 
-    model_contents = Doc2Vec.load('./False_news_model.doc2vec')
+    model_contents = Doc2Vec.load('False_news_model.doc2vec')
 
     print(input_data['category'].value_counts())    
 
 ################################ Recommand #################################
-    response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + ID + "/UserHistory.json")
-    json_data = response.json()
 
-    user_category = pd.DataFrame.from_dict(json_data, orient='index')
-    user_category = user_category.transpose()
-    print(user_category)
+    response4 = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users.json")
+    json_data = response4.json()
+    idlist = json_data.keys()
+    idlist = list(idlist)
 
-    key_list = user_category.columns
-    value_list = user_category.iloc[:1,:]
-    user_history = pd.DataFrame()
-    temp_df = pd.DataFrame()
+    for i in range(len(idlist)):
+        response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
+        json_data = response.json()
 
-    for li in key_list : 
-        num = user_category[li].iloc[0]
-        temp_df = input_data.loc[input_data['category']==li].sample(n=10*num,  random_state=1004)
-        user_history = user_history.append(temp_df, ignore_index=True)
+        user_category = pd.DataFrame.from_dict(json_data, orient='index')
+        user_category = user_category.transpose()
+        print(user_category)
 
-    user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
-    result = get_recommened_contents(user, data_doc_contents, model_contents)
-    pd.DataFrame(result.loc[:, ['category', 'title_contents']])
+        key_list = user_category.columns
+        value_list = user_category.iloc[:1,:]
+        user_history = pd.DataFrame()
+        temp_df = pd.DataFrame()
 
-    js = df.to_json(orient = 'records')
+        for li in key_list : 
+            num = user_category[li].iloc[0]
+            temp_df = input_data.loc[input_data['category']==li].sample(n=10*num,  random_state=1004)
+            user_history = user_history.append(temp_df, ignore_index=True)
 
-    senddata = {
-        ID: {
-            "Data" : js,
-            "Update" : str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+        user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
+        result = get_recommened_contents(user, data_doc_contents, model_contents)
+
+        result.drop(['title_contents'], axis = 1, inplace = True)
+
+        imsilist = result.to_json(orient = 'records',force_ascii=False)
+        imsilist = imsilist.replace("\\","")
+
+        senddata = {
+            idlist[i]: {
+                "Data" : imsilist,
+                "Update" : str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+            }
         }
-    }
 
-    jobject = json.dumps(senddata)
-    jobject = jobject.replace("[[","[")
-    jobject = jobject.replace("]]","]")
+        jobject = json.dumps(senddata,ensure_ascii=False)
+        jobject = jobject.replace('"[',"[")
+        jobject = jobject.replace(']"',"]")
+        jobject = jobject.replace("\\","")
+        jobject = jobject.encode('utf8')
 
-    jobject = jobject.replace("], [",",")
+        try:
+            r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+            if r2.status_code!=200:
+                print(r2.status_code)
+        except:
+            time.sleep(2)
+            r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+            if r2.status_code!=200:
+                print(r2.status_code)
 
-    rtnvlue = False
-    
-    try:
-        r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
-        if r2.status_code==200:
-            rtnvlue = True
-    except:
-        time.sleep(2)
-        r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
-        if r2.status_code==200:
-            rtnvlue = True
-
-    return rtnvlue
-
-
-
-    
+CallTypea2()
