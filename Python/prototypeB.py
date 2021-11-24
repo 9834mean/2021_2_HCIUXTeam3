@@ -114,8 +114,8 @@ def get_news_info(url, s) :
     flag = 0
 
     for i in range (10) : 
-        sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
-        # sec_url = url + s + "&date=" + "20211124" + "&page=" + str(current_page)
+        #sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
+        sec_url = url + s + "&date=" + "20211124" + "&page=" + str(current_page)
         soup = get_soup_obj(sec_url)
         lis = soup.find('ul', class_='type06_headline').find_all("li", limit=15)
 
@@ -251,9 +251,14 @@ def TypeB():
         result2 = pd.DataFrame()
         category = ['100','101','102','103','104','105']
 
-        for j in range (0,50,6) : 
+        # input_data2 = input_data.merge(result1, how = 'outer' ,indicator=True).loc[lambda x : x['_merge']=='left_only']
+        # input_data2 = input_data2.drop(['_merge'],axis=1)
+        input_data2 =  pd.concat([result1, input_data])
+        input_data2 = input_data2.drop_duplicates(['ID'], keep=False)
+
+        for j in range (0,50) : 
             for ca in category : 
-                temp_df = input_data.loc[input_data['category']==ca].sample(n=1,  random_state=32)
+                temp_df = input_data2.loc[input_data2['category']==ca].sample(n=1,  random_state=32)
                 result2 = result2.append(temp_df, ignore_index=True)
 
         result = pd.concat([result1, result2]) ## finish!
