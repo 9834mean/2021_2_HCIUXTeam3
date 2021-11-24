@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random
 import os
+import time
 
 import re
 from pandas.io import json
@@ -148,7 +149,7 @@ def get_news_info(url, s) :
     print(s + " 분야 크롤링 완료")    
     return news_info_list
 
-def CallTypea2(ID):
+def CallTypea2(param,ID):
     ################################ Crawling #################################
     global today
     date = str(datetime.now())
@@ -200,5 +201,36 @@ def CallTypea2(ID):
     user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
     result = get_recommened_contents(user, data_doc_contents, model_contents)
     pd.DataFrame(result.loc[:, ['category', 'title_contents']])
+
+    js = df.to_json(orient = 'records')
+
+    senddata = {
+        ID: {
+            "Data" : js,
+            "Update" : str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+        }
+    }
+
+    jobject = json.dumps(senddata)
+    jobject = jobject.replace("[[","[")
+    jobject = jobject.replace("]]","]")
+
+    jobject = jobject.replace("], [",",")
+
+    rtnvlue = False
+    
+    try:
+        r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+        if r2.status_code==200:
+            rtnvlue = True
+    except:
+        time.sleep(2)
+        r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+        if r2.status_code==200:
+            rtnvlue = True
+
+    return rtnvlue
+
+
 
     
