@@ -189,6 +189,7 @@ def get_news_info(url, s) :
 def CallTypea2():
     ################################ Crawling #################################
     global today
+    global j
     date = str(datetime.now())
     date = date[:date.rfind(':')].replace(' ', '_')
     date = date.replace(':','시') + '분'
@@ -226,10 +227,14 @@ def CallTypea2():
     idlist = list(idlist)
 
     for i in range(len(idlist)):
-        response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
-        json_data = response.json()
 
-        user_category = pd.DataFrame.from_dict(json_data, orient='index')
+        if json_data[idlist[i]]["Type"] == "B":
+            continue
+
+        # response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
+        # json_data = response.json()
+
+        user_category = pd.DataFrame.from_dict(json_data[idlist[i]]["UserHistory"], orient='index')
         user_category = user_category.transpose()
         print(user_category)
 
