@@ -176,7 +176,7 @@ make_doc2vec_models(data_doc_contents_tag, tok=False)
 
 model_contents = Doc2Vec.load('./False_news_model.doc2vec')
 
-print(input_data['category'].value_counts())
+print(input_data['category'].value_counts())    
 
 
 
@@ -187,7 +187,7 @@ json_data = response.json()
 
 user_category = pd.DataFrame.from_dict(json_data, orient='index')
 user_category = user_category.transpose()
-#print(user_category)
+print(user_category)
 
 key_list = user_category.columns
 value_list = user_category.iloc[:1,:]
