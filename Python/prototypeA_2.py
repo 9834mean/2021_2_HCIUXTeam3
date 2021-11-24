@@ -222,19 +222,19 @@ def CallTypea2():
 ################################ Recommand #################################
 
     response4 = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users.json")
-    json_data = response4.json()
-    idlist = json_data.keys()
+    json_data2 = response4.json()
+    idlist = json_data2.keys()
     idlist = list(idlist)
 
     for i in range(len(idlist)):
 
-        if json_data[idlist[i]]["Type"] == "B":
+        if json_data2[idlist[i]]["Type"] == "B":
             continue
 
-        # response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
-        # json_data = response.json()
+        response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
+        json_data = response.json()
 
-        user_category = pd.DataFrame.from_dict(json_data[idlist[i]]["UserHistory"], orient='index')
+        user_category = pd.DataFrame.from_dict(json_data, orient='index')
         user_category = user_category.transpose()
         print(user_category)
 

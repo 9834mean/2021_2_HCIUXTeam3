@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import bs4.element
 from tqdm.notebook import tqdm
 from konlpy.tag import Komoran
-
+import time
 from sklearn.manifold import TSNE
 from gensim.test.utils import common_texts
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
@@ -115,6 +115,7 @@ def get_news_info(url, s) :
 
     for i in range (10) : 
         sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
+        # sec_url = url + s + "&date=" + "20211124" + "&page=" + str(current_page)
         soup = get_soup_obj(sec_url)
         lis = soup.find('ul', class_='type06_headline').find_all("li", limit=15)
 
@@ -219,19 +220,19 @@ def TypeB():
     ########################################### Recommand ########################################
 
     response4 = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users.json")
-    json_data = response4.json()
-    idlist = json_data.keys()
+    json_data2 = response4.json()
+    idlist = json_data2.keys()
     idlist = list(idlist)
 
     for i in range(len(idlist)):
 
-        if json_data[idlist[i]]["Type"] == "A":
+        if json_data2[idlist[i]]["Type"] == "A":
             continue
 
-        # response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
-        # json_data = response.json()
+        response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + idlist[i] + "/UserHistory.json")
+        json_data = response.json()
 
-        user_category = pd.DataFrame.from_dict(json_data[idlist[i]]["UserHistory"], orient='index')
+        user_category = pd.DataFrame.from_dict(json_data, orient='index')
         user_category = user_category.transpose()
 
         key_list = user_category.columns
@@ -241,7 +242,7 @@ def TypeB():
 
         for li in key_list : 
             num = user_category[li].iloc[0]
-            temp_df = input_data.loc[input_data['category']==li].sample(n=10*num,  random_state=1004)
+            temp_df = input_data.loc[input_data['category']==li].sample(n=num*10, random_state=1004)
             user_history = user_history.append(temp_df, ignore_index=True)
 
         user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
@@ -250,11 +251,39 @@ def TypeB():
         result2 = pd.DataFrame()
         category = ['100','101','102','103','104','105']
 
-        for i in range (0,50,6) : 
+        for j in range (0,50,6) : 
             for ca in category : 
                 temp_df = input_data.loc[input_data['category']==ca].sample(n=1,  random_state=32)
                 result2 = result2.append(temp_df, ignore_index=True)
 
         result = pd.concat([result1, result2]) ## finish!
+
+        result.drop(['title_contents'], axis = 1, inplace = True)
+
+        imsilist = result.to_json(orient = 'records',force_ascii=False)
+        imsilist = imsilist.replace("\\","")
+
+        senddata = {
+            idlist[i]: {
+                "Data" : imsilist,
+                "Update" : str(datetime.today().year) + "-" + str(datetime.today().month) + "-" + str(datetime.today().day)
+            }
+        }
+
+        jobject = json.dumps(senddata,ensure_ascii=False)
+        jobject = jobject.replace('"[',"[")
+        jobject = jobject.replace(']"',"]")
+        jobject = jobject.replace("\\","")
+        jobject = jobject.encode('utf8')
+
+        try:
+            r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+            if r2.status_code!=200:
+                print(r2.status_code)
+        except:
+            time.sleep(2)
+            r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
+            if r2.status_code!=200:
+                print(r2.status_code)
 
 TypeB()
