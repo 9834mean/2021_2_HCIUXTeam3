@@ -87,15 +87,6 @@ def get_recommened_contents(user, data_doc, model):
 def view_user_history(data):
     return data[['title_contents', 'category']]
 
-
-
-########################################### Crawling ########################################
-date = str(datetime.now())
-date = date[:date.rfind(':')].replace(' ', '_')
-date = date.replace(':','시') + '분'
-today = str(datetime.now().strftime('%Y%m%d'))
-print(today)
-
 def get_soup_obj(url):
     headers = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" }
     res = requests.get(url, headers = headers)
@@ -157,61 +148,68 @@ def get_news_info(url, s) :
     print(s + " 분야 크롤링 완료")    
     return news_info_list
 
-sid = ['100', '101', '102', '103', '104', '105']
-default_url = "https://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1="
-df = pd.DataFrame()
+def TypeB(ID):
 
-for s in sid : 
-    news = get_news_info(default_url, s)
-    df = df.append(news)
+    ########################################### Crawling ########################################
+    date = str(datetime.now())
+    date = date[:date.rfind(':')].replace(' ', '_')
+    date = date.replace(':','시') + '분'
+    global today
+    today = str(datetime.now().strftime('%Y%m%d'))
+    print(today)
 
+    sid = ['100', '101', '102', '103', '104', '105']
+    default_url = "https://news.naver.com/main/list.nhn?mode=LSD&mid=sec&sid1="
+    df = pd.DataFrame()
 
+    for s in sid : 
+        news = get_news_info(default_url, s)
+        df = df.append(news)
 
 ########################################### model and EDA ########################################
-input_data = get_preprocessing_data(df)
+    global input_data
+    input_data = get_preprocessing_data(df)
 
-data_doc_contents = make_doc2vec_data(input_data, 'title_contents')
-data_doc_contents_tag = make_doc2vec_data(input_data, 'title_contents', t_document=True)
+    data_doc_contents = make_doc2vec_data(input_data, 'title_contents')
+    data_doc_contents_tag = make_doc2vec_data(input_data, 'title_contents', t_document=True)
 
-make_doc2vec_models(data_doc_contents_tag, tok=False)
+    make_doc2vec_models(data_doc_contents_tag, tok=False)
 
-model_contents = Doc2Vec.load('./False_news_model.doc2vec')
+    model_contents = Doc2Vec.load('./False_news_model.doc2vec')
 
-print(input_data['category'].value_counts())
+    print(input_data['category'].value_counts())
 
+    ########################################### Recommand ########################################
+    response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + ID + "/UserHistory.json")
+    json_data = response.json()
 
-
-########################################### Recommand ########################################
-id = "9834min"
-response = requests.get("https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + id + "/UserHistory.json")
-json_data = response.json()
-
-user_category = pd.DataFrame.from_dict(json_data, orient='index')
-user_category = user_category.transpose()
+    user_category = pd.DataFrame.from_dict(json_data, orient='index')
+    user_category = user_category.transpose()
 #print(user_category)
 
-key_list = user_category.columns
-value_list = user_category.iloc[:1,:]
-user_history = pd.DataFrame()
-temp_df = pd.DataFrame()
+    key_list = user_category.columns
+    value_list = user_category.iloc[:1,:]
+    user_history = pd.DataFrame()
+    temp_df = pd.DataFrame()
 
-for li in key_list : 
-    num = user_category[li].iloc[0]
-    temp_df = input_data.loc[input_data['category']==li].sample(n=10*num,  random_state=1004)
-    user_history = user_history.append(temp_df, ignore_index=True)
+    for li in key_list : 
+        num = user_category[li].iloc[0]
+        temp_df = input_data.loc[input_data['category']==li].sample(n=10*num,  random_state=1004)
+        user_history = user_history.append(temp_df, ignore_index=True)
 
-user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
-result1 = get_recommened_contents(user, data_doc_contents, model_contents)
+    user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
+    result1 = get_recommened_contents(user, data_doc_contents, model_contents)
 #pd.DataFrame(result1.loc[:, ['category', 'title_contents']])
 #result1['category'].value_counts()
 
-result2 = pd.DataFrame()
-category = ['100','101','102','103','104','105']
+    result2 = pd.DataFrame()
+    category = ['100','101','102','103','104','105']
 
-for i in range (0,50,6) : 
-    for ca in category : 
-        temp_df = input_data.loc[input_data['category']==ca].sample(n=1,  random_state=32)
-        result2 = result2.append(temp_df, ignore_index=True)
+    for i in range (0,50,6) : 
+        for ca in category : 
+            temp_df = input_data.loc[input_data['category']==ca].sample(n=1,  random_state=32)
+            result2 = result2.append(temp_df, ignore_index=True)
 
 #result2
-result = pd.concat([result1, result2]) ## finish!
+    result = pd.concat([result1, result2]) ## finish!
+
