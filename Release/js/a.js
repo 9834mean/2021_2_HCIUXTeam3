@@ -1,7 +1,26 @@
 temp = location.href.split("?");
 param = temp[1];
 ShuffleData = "";
+CallUserReadCount();
 callData();
+
+function CallUserReadCount(){
+  $.ajax({
+    type: "get",
+    url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + ".json",
+    dataType: 'json',
+    success: function (result) {
+      //작업이 성공적으로 발생했을 경우
+      $("#Read").text("현재까지 총 " + result["ReadCount"] + "개의 기사를 읽었습니다.");
+      $("#UserType").text("현재 " + result["Type"] + "타입을 적용하고 있습니다.");
+      return;
+    },
+    error: function () {
+      //에러가 났을 경우 실행시킬 코드
+      alert("CallUserReadCount오류")
+    }
+  })
+}
 
 function callData() {
   var xhr = new XMLHttpRequest();
@@ -13,7 +32,7 @@ function callData() {
       if (xhr.status === 200) {
         TryData(JSON.parse(xhr.responseText));
       } else {
-        console.log('Error!');
+        console.log('callData오류!');
       }
     }
   };
@@ -77,7 +96,7 @@ function UpdateClick(i) {
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("실패")
+      alert("UpdateClick오류")
     }
   })
 }
@@ -102,7 +121,7 @@ function UpdateHistory(getparam, i) {
     },
     error: function (result) {
       //에러가 났을 경우 실행시킬 코드
-      alert("실패")
+      alert("UpdateHistory오류")
     }
   })
 }
@@ -117,7 +136,7 @@ function UpdateNewsClick(i) {
       if (xhr.status === 200) {
         OriginData(JSON.parse(xhr.responseText), i);
       } else {
-        console.log('Error!');
+        console.log('UpdateNewsClick오류!');
       }
     }
   };
@@ -146,11 +165,52 @@ function OriginData(data, i) {
     dataType: 'json',
     success: function (result) {
       //작업이 성공적으로 발생했을 경우
+      GetReadCount(i)
+    },
+    error: function () {
+      //에러가 났을 경우 실행시킬 코드
+      alert("OriginData오류")
+    }
+  })
+}
+
+function GetReadCount(i){
+  $.ajax({
+    type: "get",
+    url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + "/ReadCount.json",
+    dataType: 'json',
+    success: function (result) {
+      //작업이 성공적으로 발생했을 경우
+      CountReadCount(i,result)
+    },
+    error: function () {
+      //에러가 났을 경우 실행시킬 코드
+      alert("GetReadCount오류")
+    }
+  })
+}
+
+function CountReadCount(i,resultparam){
+
+  resultparam = Number(resultparam)
+  resultparam++
+
+  var senddata = {
+    ReadCount: resultparam
+  };
+
+  $.ajax({
+    type: "patch",
+    url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + ".json",
+    data: JSON.stringify(senddata),
+    dataType: 'json',
+    success: function (result) {
+      //작업이 성공적으로 발생했을 경우
       GotoLink(ShuffleData["Data"][i]["news_url"])
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("실패")
+      alert("CountReadCount오류")
     }
   })
 }

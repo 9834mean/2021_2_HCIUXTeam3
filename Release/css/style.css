@@ -31,10 +31,10 @@ body.fh5co-overflow {
   background: #f7c873;
 }
 
-::selection {
+/* ::selection {
   color: #fff;
   background: #f7c873;
-}
+} */
 
 a {
   color: #f7c873;
@@ -414,12 +414,9 @@ p {
 .fh5co-post-entry article h2 {
   /* font-family: "Playfair Display", times, serif; */
   font-size: 20px;
-  color: #000;
   margin-bottom: 30px;
 }
-.fh5co-post-entry article h2 a {
-  color: #000;
-}
+
 @media screen and (max-width: 992px) {
   .fh5co-post-entry article h2 {
     font-size: 26px;
@@ -751,6 +748,27 @@ figure figcaption {
   padding-bottom: 40px;
 }
 
+.jm-font {
+  src:url("fonts/NotoSansCJKkr-Regular")format("otf");
+  font-family: 'NotoSansCJKkr-Regular';
+  font-size:3rem;
+  white-space:normal;
+  text-overflow:ellipsis;
+  height:0%;
+  overflow:hidden;
+}
+
+.jm-font2 {
+  src:url("fonts/NotoSansCJKkr-Regular")format("otf");
+  font-family: 'NotoSansCJKkr-Regular';
+}
+
+.jm-font3 {
+  src:url("fonts/NotoSansCJKkr-Regular")format("otf");
+  font-family: 'NotoSansCJKkr-Regular';
+  font-size: 5erm;
+}
+
 .cp-l {
   padding-left: 50px;
 }
@@ -773,6 +791,51 @@ figure figcaption {
   .col-xxs-12 {
     width: 100%;
     float: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .container-fluid {
+    background: #343434;
+    color: #fff;    
+  } 
+
+  .jm-font{
+    color: #fff;
+  } 
+
+  .jm-font2{
+    color: #fff;
+  } 
+
+  .jm-font3{
+    color: #fff;
+  } 
+
+  .Title{
+    color: #fff;
+  }
+
+  .fh5co-footer{
+    background: #343434;
+    color: #fff;    
+  }
+
+  #fh5co-offcanvas
+  {
+    background: #2a2a2a;
+  }
+
+  body{
+    color: #222;
+    background: #343434;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #fh5co-offcanvas
+  {
+    background: #fff;
   }
 }
 

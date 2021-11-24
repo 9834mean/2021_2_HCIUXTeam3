@@ -122,17 +122,20 @@ def get_news_info(url, s) :
 
         for li in lis : 
             try :
-                imsigisa = li.a.attrs.get('href')
+                imsigisa = li.a.attrs.get("href")
                 if imsigisa!="":
                     soup2 = get_soup_obj(imsigisa)
-                    lis2 = soup2.find('span', class_='end_photo_org').find_all("img", limit=15)
+                    lis2 = soup2.find("span", class_="end_photo_org").find_all("img", limit=15)
                     imsiurl = ""
                     for li2 in lis2 :
-                        imsiurl = li2.attrs.get('src')
+                        imsiurl = li2.attrs.get("src")
                 else:
-                    imsiurl = li.img.attrs.get('src') if li.img else default_img
+                    imsiurl = li.img.attrs.get("src") if li.img else default_img
             except Exception as e:
-                imsiurl = li.img.attrs.get('src') if li.img else default_img
+                imsiurl = li.img.attrs.get("src") if li.img else default_img
+
+            if imsiurl=="" or imsiurl==default_img :
+                continue
 
             imsititle = li.img.attrs.get("alt") if li.img else li.a.text.replace("\n", "")
             imsititle = imsititle.replace("\t","")

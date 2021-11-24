@@ -29,13 +29,14 @@ function CompeleteClick()
                 Age      : anotherparam[1],
                 Gender   : anotherparam[2],
                 ReadCount: 0,
+                Type     : "A",
                 UserHistory : {
-                    100 : 0,
-                    101 : 0,
-                    102 : 0,
-                    103 : 0,
-                    104 : 0,
-                    105 : 0
+                    100 : 1,
+                    101 : 1,
+                    102 : 1,
+                    103 : 1,
+                    104 : 1,
+                    105 : 1
                 }
             }
         };
