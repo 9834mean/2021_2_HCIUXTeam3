@@ -25,7 +25,7 @@ warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 
 
 
-########################################### import ########################################
+########################################### definition ########################################
 def get_preprocessing_data(data) : 
     data['title_contents'] = data['title'] + " " + data['contents']
     data.drop(['date','contents'], axis = 1, inplace = True)
@@ -184,8 +184,8 @@ def get_news_info(url, s) :
     print(s + " 분야 크롤링 완료")    
     return news_info_list
 
-def TypeB():
 
+def TypeB():
     ########################################### Crawling ########################################
     date = str(datetime.now())
     date = date[:date.rfind(':')].replace(' ', '_')
@@ -204,7 +204,7 @@ def TypeB():
         df = df.append(news)
         j=0
 
-########################################### model and EDA ########################################
+    ########################################### model and EDA ########################################
     global input_data
     input_data = get_preprocessing_data(df)
 
@@ -255,8 +255,12 @@ def TypeB():
         # input_data2 = input_data2.drop(['_merge'],axis=1)
         input_data2 =  pd.concat([result1, input_data])
         input_data2 = input_data2.drop_duplicates(['ID'], keep=False)
+        
+        '''
+        print(input_data2)해서 600-50 = 550개 나오는지 확인해봐야 할 것 같아요..! 
+        '''
 
-        for j in range (0,50) : 
+        for j in range (0,50) :     
             for ca in category : 
                 temp_df = input_data2.loc[input_data2['category']==ca].sample(n=1,  random_state=32)
                 result2 = result2.append(temp_df, ignore_index=True)
