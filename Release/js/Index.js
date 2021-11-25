@@ -57,6 +57,15 @@ function TryData(data) {
 
 
 function LoginClick() {
+
+    let today = new Date(); 
+    a = today.getHours()
+    if(a<11 || a>22)
+    {
+        alert("지금은 점검시간입니다. 오픈시간은 오전11시부터 오후 11시 입니다.")
+        return;
+    }
+
     document.getElementById('LoginBtn').setAttribute('disabled', 'true')
     var getid = document.getElementById("txt_id").value;    //합칠때 수정 필요
 
