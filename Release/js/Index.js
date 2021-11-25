@@ -2,6 +2,7 @@ $(window).on('load', function () {
     $('#loading').hide();
 });
 
+
 IDList = [];
 CallUsers();
 
@@ -54,12 +55,16 @@ function TryData(data) {
     console.log(IDList.length)
 }
 
-function LoginClick() {
 
+function LoginClick() {
+    document.getElementById('LoginBtn').setAttribute('disabled', 'true')
     var getid = document.getElementById("txt_id").value;    //합칠때 수정 필요
+
+    getid = getid.replace(/(\s*)/g, "")
 
     if (getid == "") {
         alert("아이디를 입력해 주세요!")
+        document.getElementById('LoginBtn').setAttribute('disabled', 'false')
     }
     else {
         n = IDList.indexOf(getid)
@@ -76,6 +81,7 @@ function LoginClick() {
                     error: function () {
                         //에러가 났을 경우 실행시킬 코드
                         alert("업데이트 실패. 담당자에게 문의 바랍니다.")
+                        document.getElementById('LoginBtn').setAttribute('disabled', 'false')
                     }
                 })
             }
@@ -85,6 +91,7 @@ function LoginClick() {
         }
         else {
             alert("존재하지 않는 ID 입니다.")
+            document.getElementById('LoginBtn').setAttribute('disabled', 'false')
         }
     }
 

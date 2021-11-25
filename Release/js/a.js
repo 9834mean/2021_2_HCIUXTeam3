@@ -17,7 +17,8 @@ function CallUserReadCount(){
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("CallUserReadCount오류")
+      alert("CallUserReadCounta오류로 초기페이지로 돌아갑니다.")
+      location.href="Index.html";
     }
   })
 }
@@ -32,7 +33,8 @@ function callData() {
       if (xhr.status === 200) {
         TryData(JSON.parse(xhr.responseText));
       } else {
-        console.log('callData오류!');
+        console.log('callData오류로 초기페이지로 돌아갑니다.');
+        location.href="Index.html";
       }
     }
   };
@@ -96,7 +98,8 @@ function UpdateClick(i) {
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("UpdateClick오류")
+      alert("UpdateClick오류로 초기페이지로 돌아갑니다.")
+      location.href="Index.html";
     }
   })
 }
@@ -121,7 +124,8 @@ function UpdateHistory(getparam, i) {
     },
     error: function (result) {
       //에러가 났을 경우 실행시킬 코드
-      alert("UpdateHistory오류")
+      alert("UpdateHistory오류로 초기페이지로 돌아갑니다.")
+      location.href="Index.html";
     }
   })
 }
@@ -136,7 +140,8 @@ function UpdateNewsClick(i) {
       if (xhr.status === 200) {
         OriginData(JSON.parse(xhr.responseText), i);
       } else {
-        console.log('UpdateNewsClick오류!');
+        console.log('UpdateNewsClick오류로 초기페이지로 돌아갑니다.');
+        location.href="Index.html";
       }
     }
   };
@@ -169,7 +174,8 @@ function OriginData(data, i) {
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("OriginData오류")
+      alert("OriginData오류로 초기페이지로 돌아갑니다.")
+      location.href="Index.html";
     }
   })
 }
@@ -185,7 +191,8 @@ function GetReadCount(i){
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("GetReadCount오류")
+      alert("GetReadCount오류로 초기페이지로 돌아갑니다.")
+      location.href="Index.html";
     }
   })
 }
@@ -210,7 +217,8 @@ function CountReadCount(i,resultparam){
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("CountReadCount오류")
+      alert("CountReadCount오류로 초기페이지로 돌아갑니다.")
+      location.href="Index.html";
     }
   })
 }
