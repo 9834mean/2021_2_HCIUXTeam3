@@ -256,13 +256,9 @@ def TypeB():
         input_data2 =  pd.concat([result1, input_data])
         input_data2 = input_data2.drop_duplicates(['ID'], keep=False)
         
-        '''
-        print(input_data2)해서 600-50 = 550개 나오는지 확인해봐야 할 것 같아요..! 
-        '''
-
-        for j in range (0,50) :     
+        for j in range (0,50,6) :     
             for ca in category : 
-                temp_df = input_data2.loc[input_data2['category']==ca].sample(n=1,  random_state=32)
+                temp_df = input_data2.loc[input_data2['category']==ca].sample(n=1)
                 result2 = result2.append(temp_df, ignore_index=True)
 
         result = pd.concat([result1, result2]) ## finish!
@@ -295,5 +291,7 @@ def TypeB():
             r2 = requests.patch("https://hciuxteam3-default-rtdb.firebaseio.com/NewsData.json", data =jobject)
             if r2.status_code!=200:
                 print(r2.status_code)
+        
+        # result.describe()
 
 TypeB()
