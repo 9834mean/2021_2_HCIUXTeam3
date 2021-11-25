@@ -1432,6 +1432,15 @@ img {
 }
 
 .img-responsive {
+  /* display: block; */
+  overflow:hidden;
+  object-fit: cover;
+  min-width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.img-responsive2 {
   display: block;
   max-width: 100%;
   height: auto;

@@ -52,10 +52,10 @@ function setelement(NewsData) {
   var html = '';
   for (i = 0; i < NewsData["Data"].length; i++) {
     html += '<article id="' + NewsData["Data"][i]["ID"] + '" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-xxs-12 animate-box" onclick=newsclick(this)>';
-    html += '<figure style="width:100%;height:100%;max-height:200px;min-height:200px;object-fit:cover;overflow:hidden;">';
-    html += '<img src="' + NewsData["Data"][i]["image_url"] + ' alt="Image" class="img-responsive">';
+    html += '<figure style="width:100%;height:100%;height:200px;object-fit:cover;overflow:hidden;box-shadow:3px 3px 5px black ;">';
+    html += '<img src="' + NewsData["Data"][i]["image_url"] + ' style="height:200px;" class="img-responsive">';
     html += '</figure>';
-    html += '<h2 class="jm-font">' + NewsData["Data"][i]["title"] + '</a></h2>';
+    html += '<h2 class="jm-font" style="text-algin:center;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">' + NewsData["Data"][i]["title"] + '</a></h2>';
     html += '</article>';
   }
   $("#parent").append(html);
