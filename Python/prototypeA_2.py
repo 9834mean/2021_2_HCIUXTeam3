@@ -67,8 +67,8 @@ def make_user_embedding(index_list, data_doc, model):
     user_embedding = []
     for i in index_list: 
         user.append(data_doc[i][0][0])
-    for i in user:
-        user_embedding.append(model.dv[i])
+    for k in user:
+        user_embedding.append(model.dv[k])
     user_embedding = np.array(user_embedding)
     user = np.mean(user_embedding, axis = 0)
     return user
@@ -166,8 +166,8 @@ def get_news_info(url, s) :
                 news_contents = get_news_contents(news_info["news_url"])
                 news_info["contents"] = news_contents
 
-                for i in range(len(news_info_list)):
-                    if(imsinewsurl==news_info_list[i]["news_url"]):
+                for k in range(len(news_info_list)):
+                    if(imsinewsurl==news_info_list[k]["news_url"]):
                         flag = 1
                         break
                 
@@ -245,13 +245,14 @@ def CallTypea2():
 
         for li in key_list : 
             num = user_category[li].iloc[0]
-            temp_df = input_data.loc[input_data['category']==li].sample(n=10*num,  random_state=1004)
+            temp_df = input_data.loc[input_data['category']==li].sample(n=int(50*num), random_state=1004)
             user_history = user_history.append(temp_df, ignore_index=True)
 
         user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
         result = get_recommened_contents(user, data_doc_contents, model_contents)
 
         result.drop(['title_contents'], axis = 1, inplace = True)
+        result = result.drop_duplicates(['ID'])
 
         imsilist = result.to_json(orient = 'records',force_ascii=False)
         imsilist = imsilist.replace("\\","")
