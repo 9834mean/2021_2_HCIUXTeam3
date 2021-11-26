@@ -51,6 +51,12 @@ function setelement(NewsData) {
   ShuffleData = NewsData
   var html = '';
   for (i = 0; i < NewsData["Data"].length; i++) {
+
+    if(NewsData["Data"][i]["Click"]=="1")
+    {
+      continue
+    }
+
     html += '<article id="' + NewsData["Data"][i]["ID"] + '" class="col-lg-3 col-md-3 col-sm-3 col-xs-6 col-xxs-12 animate-box" onclick=newsclick(this)>';
     html += '<figure style="width:100%;height:100%;height:200px;object-fit:cover;overflow:hidden;box-shadow:3px 3px 5px black ;">';
     html += '<img src="' + NewsData["Data"][i]["image_url"] + ' style="height:200px;" class="img-responsive">';
