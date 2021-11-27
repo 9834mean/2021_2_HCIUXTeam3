@@ -1,10 +1,13 @@
 temp = location.href.split("?");
 param = temp[1];
 ShuffleData = "";
+UserData = "";
+OriginData = []
+BackID = "";
 CallUserReadCount();
 callData();
 
-function CallUserReadCount(){
+function CallUserReadCount() {
   $.ajax({
     type: "get",
     url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + ".json",
@@ -13,12 +16,13 @@ function CallUserReadCount(){
       //작업이 성공적으로 발생했을 경우
       $("#Read").text("현재까지 총 " + result["ReadCount"] + "개의 기사를 읽었습니다.");
       $("#UserType").text("현재 " + result["Type"] + "타입을 적용하고 있습니다.");
+      UserData = result
       return;
     },
     error: function () {
       //에러가 났을 경우 실행시킬 코드
-      alert("CallUserReadCounta오류로 초기페이지로 돌아갑니다.")
-      location.href="Index.html";
+      alert("CallUserReadCounta 오류로 초기페이지로 돌아갑니다.")
+      location.href = "Index.html";
     }
   })
 }
@@ -33,8 +37,8 @@ function callData() {
       if (xhr.status === 200) {
         TryData(JSON.parse(xhr.responseText));
       } else {
-        console.log('callData오류로 초기페이지로 돌아갑니다.');
-        location.href="Index.html";
+        console.log('callData 오류로 초기페이지로 돌아갑니다.');
+        location.href = "Index.html";
       }
     }
   };
@@ -47,13 +51,13 @@ function TryData(data) {
 }
 
 function setelement(NewsData) {
+  OriginData = NewsData["Data"].slice()
   NewsData["Data"] = shuffle(NewsData["Data"])
   ShuffleData = NewsData
   var html = '';
   for (i = 0; i < NewsData["Data"].length; i++) {
 
-    if(NewsData["Data"][i]["Click"]=="1")
-    {
+    if (NewsData["Data"][i]["Click"] == "1") {
       continue
     }
 
@@ -82,12 +86,10 @@ test = false
 
 function newsclick(getdata) {
 
-  if(test==false)
-  {
+  if (test == false) {
     test = true
   }
-  else
-  {
+  else {
     return
   }
 
@@ -98,32 +100,15 @@ function newsclick(getdata) {
         break;
       }
       else {
-        UpdateClick(i)
+        Update(i)
       }
     }
 
   }
 }
 
-function UpdateClick(i) {
-  $.ajax({
-    type: "get",
-    url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + "/UserHistory.json",
-    dataType: 'json',
-    success: function (result) {
-      //작업이 성공적으로 발생했을 경우
-      UpdateHistory(result, i)
-    },
-    error: function () {
-      //에러가 났을 경우 실행시킬 코드
-      alert("UpdateClick오류로 초기페이지로 돌아갑니다.")
-      location.href="Index.html";
-    }
-  })
-}
-
-function UpdateHistory(getparam, i) {
-  Clickcategory = Number(getparam[ShuffleData["Data"][i]["category"]])
+function Update(i) {
+  Clickcategory = Number(UserData["UserHistory"][ShuffleData["Data"][i]["category"]])
   Clickcategory = Clickcategory + 0.1
   Clickcategory = Clickcategory.toFixed(1)
   Clickcategory = Number(Clickcategory)
@@ -140,48 +125,24 @@ function UpdateHistory(getparam, i) {
     dataType: 'json',
     success: function (result) {
       //작업이 성공적으로 발생했을 경우
-      UpdateNewsClick(i)
+      UpdateOriginData(i)
     },
     error: function (result) {
       //에러가 났을 경우 실행시킬 코드
-      alert("UpdateHistory오류로 초기페이지로 돌아갑니다.")
-      location.href="Index.html";
+      alert("Update 실패로 초기페이지로 돌아갑니다.")
+      location.href = "Index.html";
     }
   })
 }
 
-function UpdateNewsClick(i) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/' + param + '.json');
-  xhr.setRequestHeader('Content-type', 'application/json');
-
-  xhr.onreadystatechange = function (e) {
-    if (xhr.readyState === XMLHttpRequest.DONE) {
-      if (xhr.status === 200) {
-        OriginData(JSON.parse(xhr.responseText), i);
-      } else {
-        console.log('UpdateNewsClick오류로 초기페이지로 돌아갑니다.');
-        location.href="Index.html";
-      }
-    }
-  };
-
-  xhr.send();
-}
-
-function OriginData(data, i) {
+function UpdateOriginData(i) {
   var senddata = {
     Click: 1
   };
 
-  Num = "a"
+  Num = OriginData.findIndex(obj => obj.ID == ShuffleData["Data"][i]["ID"]);
 
-  for (k = 0; k < data["Data"].length; k++) {
-    if (ShuffleData["Data"][i]["ID"] == data["Data"][k]["ID"]) {
-      Num = k
-      break;
-    }
-  }
+  BackID = ShuffleData["Data"][i]["ID"]
 
   $.ajax({
     type: "patch",
@@ -190,37 +151,18 @@ function OriginData(data, i) {
     dataType: 'json',
     success: function (result) {
       //작업이 성공적으로 발생했을 경우
-      GetReadCount(i)
+      UpdateReadCount(i)
     },
     error: function () {
-      //에러가 났을 경우 실행시킬 코드
-      alert("OriginData오류로 초기페이지로 돌아갑니다.")
-      location.href="Index.html";
+      RollBackUserHistory(i)
     }
   })
 }
 
-function GetReadCount(i){
-  $.ajax({
-    type: "get",
-    url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + "/ReadCount.json",
-    dataType: 'json',
-    success: function (result) {
-      //작업이 성공적으로 발생했을 경우
-      CountReadCount(i,result)
-    },
-    error: function () {
-      //에러가 났을 경우 실행시킬 코드
-      alert("GetReadCount오류로 초기페이지로 돌아갑니다.")
-      location.href="Index.html";
-    }
-  })
-}
+function UpdateReadCount(i) {
 
-function CountReadCount(i,resultparam){
-
-  resultparam = Number(resultparam)
-  resultparam = resultparam+1
+  resultparam = Number(UserData["ReadCount"])
+  resultparam = resultparam + 1
 
   var senddata = {
     ReadCount: resultparam
@@ -236,9 +178,7 @@ function CountReadCount(i,resultparam){
       GotoLink(ShuffleData["Data"][i]["news_url"])
     },
     error: function () {
-      //에러가 났을 경우 실행시킬 코드
-      alert("CountReadCount오류로 초기페이지로 돌아갑니다.")
-      location.href="Index.html";
+      RollBackUserHistory(i)
     }
   })
 }
@@ -246,4 +186,59 @@ function CountReadCount(i,resultparam){
 function GotoLink(link) {
   window.open(link);
   window.location.reload()
+}
+
+function RollBackUserHistory(i) {
+  Clickcategory = Number(UserData["UserHistory"][ShuffleData["Data"][i]["category"]])
+
+  var senddata = {
+    [ShuffleData["Data"][i]["category"]]: Clickcategory
+  };
+
+  senddata = JSON.stringify(senddata)
+
+  $.ajax({
+    type: "patch",
+    url: "https://hciuxteam3-default-rtdb.firebaseio.com/Users/" + param + "/UserHistory.json",
+    data: senddata,
+    dataType: 'json',
+    success: function () {
+      if(BackID=!"")
+      {
+        RollBackClick(i)
+      }
+      else
+      {
+        alert("오류로 초기페이지로 돌아갑니다.")
+        location.href = "Index.html";
+      }
+    },
+    error: function (result) {
+      //에러가 났을 경우 실행시킬 코드
+      alert("백업실패. 관리자에게 문의 바랍니다.\nUserHistory 원본\n" + ShuffleData["Data"][i]["category"] + ":" + Clickcategory)
+    }
+  })
+}
+
+function RollBackClick(i){
+
+  var senddata = {
+    Click: 0
+  };
+
+  Num = OriginData.findIndex(obj => obj.ID == ShuffleData["Data"][i]["ID"]);
+
+  $.ajax({
+    type: "patch",
+    url: "https://hciuxteam3-default-rtdb.firebaseio.com/NewsData/" + param + '/Data/' + Num + ".json",
+    data: JSON.stringify(senddata),
+    dataType: 'json',
+    success: function () {
+      alert("클릭 갱신중 오류로 초기페이지로 돌아갑니다.")
+      location.href = "Index.html";
+    },
+    error: function () {
+      alert("백업실패. 관리자에게 문의 바랍니다.\nClick ID 원본:" + BackID)
+    }
+  })
 }
