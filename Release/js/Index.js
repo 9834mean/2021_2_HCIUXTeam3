@@ -63,17 +63,17 @@ function LoginClick() {
 
     getid = getid.replace(/(\s*)/g, "")
 
+    if(getid=="9834min" || getid=="codo47" || getid=="kdy6467" || getid=="dolphin")
+    {
+        location.href = "Main.html?" + getid;
+        return;
+    }
+
+
     let today = new Date(); 
     a = today.getHours()
     if(a<11 || a>22)
     {
-
-        if(getid=="9834min" || getid=="codo47" || getid=="kdy6467" || getid=="dolphin")
-        {
-            location.href = "Main.html?" + getid;
-            return;
-        }
-
         alert("지금은 점검시간입니다. 오픈시간은 오전11시부터 오후 11시 입니다.")
         return;
     }

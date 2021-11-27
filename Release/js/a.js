@@ -124,7 +124,9 @@ function UpdateClick(i) {
 
 function UpdateHistory(getparam, i) {
   Clickcategory = Number(getparam[ShuffleData["Data"][i]["category"]])
-  Clickcategory++
+  Clickcategory = Clickcategory + 0.1
+  Clickcategory = Clickcategory.toFixed(1)
+  Clickcategory = Number(Clickcategory)
   var senddata = {
     [ShuffleData["Data"][i]["category"]]: Clickcategory
   };
@@ -218,7 +220,7 @@ function GetReadCount(i){
 function CountReadCount(i,resultparam){
 
   resultparam = Number(resultparam)
-  resultparam++
+  resultparam = resultparam+1
 
   var senddata = {
     ReadCount: resultparam
