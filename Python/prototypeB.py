@@ -114,8 +114,8 @@ def get_news_info(url, s) :
     flag = 0
 
     for i in range (10) : 
-        #sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
-        sec_url = url + s + "&date=" + "20211124" + "&page=" + str(current_page)
+        sec_url = url + s + "&date=" + today + "&page=" + str(current_page)
+        #sec_url = url + s + "&date=" + "20211124" + "&page=" + str(current_page)
         soup = get_soup_obj(sec_url)
         lis = soup.find('ul', class_='type06_headline').find_all("li", limit=15)
 
@@ -240,9 +240,24 @@ def TypeB():
         user_history = pd.DataFrame()
         temp_df = pd.DataFrame()
 
+        multi = 10
+        maxvalue = max(value_list.values)
+        maxvalue = max(maxvalue)
+
+        if maxvalue<1:
+            multi = 80
+        elif maxvalue<2:
+            multi = 40
+        elif maxvalue<3:
+            multi = 30
+        elif maxvalue<4:
+            multi = 20
+
+        # multi = 10
+
         for li in key_list : 
             num = user_category[li].iloc[0]
-            temp_df = input_data.loc[input_data['category']==li].sample(n=int(50*num), random_state=1004)
+            temp_df = input_data.loc[input_data['category']==li].sample(n=int(multi*num), random_state=1004)
             user_history = user_history.append(temp_df, ignore_index=True)
 
         user = make_user_embedding(user_history.index.values.tolist(), data_doc_contents, model_contents)
